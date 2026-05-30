@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivias Jurídicas - TikTok</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+        }
+        .elegant-title {
+            font-family: 'Cinzel', serif;
+        }
+        /* Estructura específica emulador de TikTok 9:16 */
+        .tiktok-viewport {
+            aspect-ratio: 9 / 16;
+            width: 380px;
+            max-width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.7);
+            border: 8px solid #1e293b;
+            border-radius: 2.5rem;
+            background: radial-gradient(circle at top, #111827 0%, #030712 100%);
+            transition: all 0.3s ease;
+        }
+        /* Animaciones para el temporizador visual */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .pulse-timer {
+            animation: pulse-ring 1.8s infinite ease-in-out;
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+        }
+        .glow-sky {
+            box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
+        }
+        .glow-rose {
+            box-shadow: 0 0 25px rgba(244, 63, 94, 0.5);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col lg:flex-row p-4 lg:p-6 gap-6 justify-center items-center">
+
+    <!-- PANEL DE CONTROL (IZQUIERDA) -->
+    <div class="w-full lg:w-[45%] max-w-2xl bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col gap-5 shadow-2xl overflow-y-auto max-h-[95vh]">
+        
+        <!-- ENCABEZADO PANEL -->
+        <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-extrabold text-amber-500 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Trivia Jurídica
+                </h1>
+                <p class="text-slate-400 text-xs mt-0.5">Control de grabación continua, automatización y tiempos adaptables.</p>
+            </div>
+            <span class="bg-amber-500/10 text-amber-400 text-[10px] font-bold px-2 py-1 rounded border border-amber-500/20">V2.1 Autoplay</span>
+        </div>
+
+        <!-- SECCIÓN 1: CONFIGURACIÓN DE TIEMPOS -->
+        <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-800 space-y-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Tiempos de Producción del Video
+            </h2>
+            <div class="grid grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1" title="Tiempo para esconder el panel y prepararse a hablar">
+                        Retraso Inicial
+                    </label>
+                    <div class="flex items-center bg-slate-800 rounded border border-slate-700 px-2 py-1.5">
+                        <input type="number" id="time-prep" value="3" min="1" max="10" class="w-full bg-transparent text-center text-sm font-bold text-white focus:outline-none">
+                        <span class="text-[10px] text-slate-500 ml-1">seg</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1" title="Tiempo dedicado para que lean la pregunta en pantalla">
+                        Tiempo Lectura
+                    </label>
+                    <div class="flex items-center bg-slate-800 rounded border border-slate-700 px-2 py-1.5">
+                        <input type="number" id="time-read" value="10" min="2" max="30" class="w-full bg-transparent text-center text-sm font-bold text-white focus:outline-none">
+                        <span class="text-[10px] text-slate-500 ml-1">seg</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1" title="Tiempo del temporizador para resolver en mente">
+                        Tiempo Respuesta
+                    </label>
+                    <div class="flex items-center bg-slate-800 rounded border border-slate-700 px-2 py-1.5">
+                        <input type="number" id="time-solve" value="5" min="2" max="15" class="w-full bg-transparent text-center text-sm font-bold text-white focus:outline-none">
+                        <span class="text-[10px] text-slate-500 ml-1">seg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: IDENTIDAD Y BRANDING -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-800/25 p-3 rounded-xl border border-slate-800/60">
+            <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Nombre o Cuenta (TikTok)</label>
+                <input type="text" id="brand-handle" value="@DosisLegal_" oninput="updateBrand()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Nombre de Firma / Eslogan</label>
+                <input type="text" id="brand-name" value="Bayter" oninput="updateBrand()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Logo (Cargar Imagen)</label>
+                <input type="file" id="brand-logo-file" accept="image/*" onchange="uploadLogo(event)" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-slate-400 cursor-pointer">
+            </div>
+            <div>
+                <label class="block text-[11px] text-slate-400 mb-1">Tema Visual</label>
+                <select id="theme-select" onchange="changeTheme()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none">
+                    <option value="gold">Oro y Negro Imperial</option>
+                    <option value="corporate">Azul Corporativo</option>
+                    <option value="crimson">Burdeos Clásico</option>
+                    <option value="emerald">Verde Corporativo</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: GESTOR DE LISTA DE PREGUNTAS -->
+        <div class="space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-amber-400">3. Administrador de Preguntas en Cola</h2>
+                <div class="flex gap-2">
+                    <button onclick="addNewQuestionEmpty()" class="text-[10px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30 px-2 py-1 rounded transition">
+                        + Nueva Pregunta
+                    </button>
+                    <button onclick="restoreDefaultQuestions()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition" title="Restaurar banco original">
+                        Restaurar Banco
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lista interactiva de preguntas en la cola -->
+            <div id="playlist-container" class="max-h-48 overflow-y-auto space-y-2 border border-slate-800 p-2 rounded-lg bg-slate-950/80">
+                <!-- Se llena dinámicamente -->
+            </div>
+
+            <!-- Editor de la pregunta seleccionada actualmente en la cola -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-semibold text-amber-400" id="editor-title">Editando Pregunta 1</span>
+                    <span class="text-[10px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded" id="editor-category-badge">Derecho Laboral</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5">Categoría</label>
+                        <input type="text" id="edit-category" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white" oninput="saveCurrentEdit()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5">Opción Correcta</label>
+                        <select id="edit-correct" onchange="saveCurrentEdit()" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-0.5">Enunciado de la Pregunta</label>
+                    <textarea id="edit-question" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-white resize-none" oninput="saveCurrentEdit()"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5">Opción A</label>
+                        <input type="text" id="edit-a" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-white" oninput="saveCurrentEdit()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5">Opción B</label>
+                        <input type="text" id="edit-b" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-white" oninput="saveCurrentEdit()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5">Opción C</label>
+                        <input type="text" id="edit-c" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-white" oninput="saveCurrentEdit()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-0.5">Opción D</label>
+                        <input type="text" id="edit-d" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-white" oninput="saveCurrentEdit()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: CONTROLES DEL AUTOMATA JURÍDICO -->
+        <div class="space-y-3 border-t border-slate-800 pt-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-amber-400">4. Consola de Producción en Vivo</h2>
+            
+            <!-- Estado actual de la automatización -->
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+                <div>
+                    <span class="text-slate-400">Estado de Flujo:</span>
+                    <span id="workflow-status" class="ml-2 font-bold text-blue-400">Listo para Iniciar</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse" id="status-indicator"></span>
+                    <span id="preparation-countdown" class="font-mono font-bold text-amber-400">0s prep</span>
+                </div>
+            </div>
+
+            <!-- Botones Principales -->
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="startCompleteWorkflow()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 active:scale-95 text-slate-950 font-extrabold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                    Iniciar Ciclo Completo
+                </button>
+                <button onclick="revealAnswerDirectly()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    Frenar y Revelar
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="previousQuestion()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-xs font-semibold transition">
+                    ◀ Anterior
+                </button>
+                <button onclick="nextQuestion()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-xs font-semibold transition">
+                    Siguiente ▶
+                </button>
+                <button onclick="resetFlowState()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-semibold transition">
+                    Reiniciar Vista
+                </button>
+            </div>
+
+            <div class="flex justify-center mt-1">
+                <button onclick="toggleCleanMode()" id="clean-btn" class="w-full bg-indigo-900/60 hover:bg-indigo-900 text-indigo-100 border border-indigo-700/80 font-bold py-2.5 px-4 rounded-xl text-xs transition">
+                    Modo Grabación (Ocultar Todo)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMULADOR DE TIKTOK (DERECHA) -->
+    <div id="tiktok-container" class="flex flex-col items-center gap-2">
+        <div class="text-[10px] uppercase tracking-widest text-slate-400 font-extrabold mb-1 flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span> Grabación TikTok 9:16
+        </div>
+        
+        <div class="tiktok-viewport flex flex-col justify-between py-8 px-6" id="tiktok-screen">
+            
+            <!-- ENCABEZADO TIKTOK: Marca Personal de la Firma -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-3.5 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-full bg-amber-500/20 border border-amber-400 overflow-hidden flex items-center justify-center shadow-md" id="logo-preview-container">
+                        <!-- Logo default: Balanza elegante en SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" id="default-logo-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                        </svg>
+                        <img id="custom-logo-img" class="w-full h-full object-cover hidden" alt="Logo">
+                    </div>
+                    <div>
+                        <h4 class="text-[11px] font-extrabold text-white tracking-wide" id="preview-brand-name">Bayter</h4>
+                        <span class="text-[9px] text-amber-400 font-bold" id="preview-brand-handle">@DosisLegal_</span>
+                    </div>
+                </div>
+                
+                <!-- Reto badge arriba -->
+                <div class="bg-red-600 text-white text-[8px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-widest animate-pulse">
+                    RETO LEGAL
+                </div>
+            </div>
+
+            <!-- CUERPO PRINCIPAL: Tarjeta de pregunta con los temporizadores -->
+            <div class="flex flex-col gap-3 my-auto z-10">
+                
+                <!-- Tarjeta de Pregunta -->
+                <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl p-4 shadow-xl backdrop-blur-sm relative">
+                    <!-- Categoría de Derecho -->
+                    <span class="absolute -top-3 left-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow" id="preview-category">
+                        DERECHO LABORAL
+                    </span>
+                    
+                    <!-- Indicador de Tiempo de Lectura Sutil (Arriba a la derecha) -->
+                    <div id="read-timer-indicator" class="absolute -top-3 right-4 bg-slate-950 text-slate-300 border border-slate-700 font-bold text-[9px] px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-amber-400 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Lectura: <span id="read-timer-val" class="text-amber-400 font-extrabold">10</span>s
+                    </div>
+
+                    <p class="text-white text-xs md:text-sm font-extrabold leading-snug mt-2" id="preview-question">
+                        ¿Cuál es el recargo legal que debe recibir un trabajador por laborar en día dominical o festivo en Colombia?
+                    </p>
+                </div>
+
+                <!-- Lista de opciones de selección múltiple -->
+                <div class="flex flex-col gap-2">
+                    <!-- Opción A -->
+                    <div id="opt-A" class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2.5 transition duration-200">
+                        <div class="w-6.5 h-6.5 rounded bg-amber-500/10 border border-amber-500/40 text-amber-400 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator">A</div>
+                        <span class="text-[11px] font-bold text-slate-200 opt-text" id="preview-a">Recargo del 35% sobre el valor ordinario.</span>
+                    </div>
+                    <!-- Opción B -->
+                    <div id="opt-B" class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2.5 transition duration-200">
+                        <div class="w-6.5 h-6.5 rounded bg-amber-500/10 border border-amber-500/40 text-amber-400 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator">B</div>
+                        <span class="text-[11px] font-bold text-slate-200 opt-text" id="preview-b">Recargo del 75% sobre el salario ordinario.</span>
+                    </div>
+                    <!-- Opción C -->
+                    <div id="opt-C" class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2.5 transition duration-200">
+                        <div class="w-6.5 h-6.5 rounded bg-amber-500/10 border border-amber-500/40 text-amber-400 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator">C</div>
+                        <span class="text-[11px] font-bold text-slate-200 opt-text" id="preview-c">Recargo del 100% sobre el salario base.</span>
+                    </div>
+                    <!-- Opción D -->
+                    <div id="opt-D" class="bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2.5 transition duration-200">
+                        <div class="w-6.5 h-6.5 rounded bg-amber-500/10 border border-amber-500/40 text-amber-400 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator">D</div>
+                        <span class="text-[11px] font-bold text-slate-200 opt-text" id="preview-d">Recargo del 110% por jornada especial extraordinaria.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER: Cuenta regresiva y estados del reto -->
+            <div class="flex flex-col items-center justify-center gap-1.5 mt-auto z-10 pt-2">
+                
+                <!-- Indicador de Preparación / Cuenta regresiva general -->
+                <div id="timer-box" class="w-14 h-14 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-extrabold text-2xl shadow-2xl relative pulse-timer border-4 border-slate-950 glow-gold">
+                    <span id="countdown-val">5</span>
+                </div>
+                
+                <p id="timer-caption" class="text-[9px] text-amber-400 uppercase tracking-widest font-extrabold animate-pulse">¡TIENES 5 SEGUNDOS PARA PENSAR!</p>
+            </div>
+
+            <!-- Marca de agua de canal/crédito -->
+            <div class="flex justify-between items-center text-[9px] text-slate-500 pt-3 border-t border-white/5 mt-3 z-10">
+                <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.192-1.229 4 4 0 00-5.189-3.815l-1.474-1.474A6 6 0 1116 10zM4 10c0-.993.241-1.929.668-2.754l1.524 1.525a3.997 3.997 0 00-.192 1.229 4 4 0 005.189 3.815l1.474 1.474A6 6 0 114 10z" clip-rule="evenodd" />
+                    </svg>
+                    Aprende Leyes Diario
+                </span>
+                <span class="font-bold text-amber-500/70" id="preview-watermark">@DosisLegal_</span>
+            </div>
+            
+            <!-- Luces difusas de fondo -->
+            <div class="absolute -bottom-10 -right-10 w-44 h-44 bg-amber-500/10 rounded-full blur-3xl" id="bg-glow-right"></div>
+            <div class="absolute -top-10 -left-10 w-44 h-44 bg-indigo-500/10 rounded-full blur-3xl" id="bg-glow-left"></div>
+        </div>
+
+        <!-- Botón flotante para salir del Modo Grabación -->
+        <button id="exit-clean-btn" onclick="toggleCleanMode()" class="hidden bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full shadow-lg text-xs mt-3 transition active:scale-95">
+            ◀ Salir del Modo Grabación (Volver al panel)
+        </button>
+    </div>
+
+    <!-- SCRIPT DE FLUJO CONTINUO Y AUDIO -->
+    <script>
+        // --- BASE DE DATOS DE PREGUNTAS MODIFICABLE ---
+        let questions = [
+            {
+                category: "Derecho Laboral",
+                question: "¿Cuál es el recargo legal que debe recibir un trabajador por laborar en día dominical o festivo en Colombia?",
+                a: "Recargo del 35% sobre el valor ordinario.",
+                b: "Recargo del 75% sobre el salario ordinario.",
+                c: "Recargo del 100% sobre el salario base.",
+                d: "Recargo del 110% por jornada especial extraordinaria.",
+                correct: "B"
+            },
+            {
+                category: "Derecho de Petición",
+                question: "Conforme a la Ley 1755 de 2015, ¿cuál es el término general para responder un Derecho de Petición ordinario?",
+                a: "10 días hábiles siguientes a su recepción.",
+                b: "15 días hábiles siguientes a su recepción.",
+                c: "30 días calendario contados desde la radicación.",
+                d: "5 días hábiles si se trata de un particular.",
+                correct: "B"
+            },
+            {
+                category: "Derecho de Petición",
+                question: "Si solicitas copias o información pública mediante Derecho de Petición, ¿en qué plazo te deben responder?",
+                a: "3 días hábiles.",
+                b: "5 días hábiles.",
+                c: "10 días hábiles.",
+                d: "15 días hábiles.",
+                correct: "C"
+            },
+            {
+                category: "Comercial / PYMEs",
+                question: "¿Cuál de las siguientes es una característica exclusiva de las Sociedades por Acciones Simplificadas (S.A.S.) en Colombia?",
+                a: "Deben constituirse obligatoriamente por Escritura Pública.",
+                b: "Pueden constituirse de forma unipersonal mediante documento privado.",
+                c: "Requieren una junta directiva de mínimo 3 miembros.",
+                d: "Su capital debe estar totalmente pagado en el acto de constitución.",
+                correct: "B"
+            },
+            {
+                category: "Derecho Civil",
+                question: "Según el CPACA, ¿cuál es el término legal para demandar un acto administrativo por Nulidad y Restablecimiento?",
+                a: "2 años desde la publicación.",
+                b: "6 meses desde la notificación.",
+                c: "4 meses desde la notificación del acto.",
+                d: "No tiene término, se puede demandar en cualquier momento.",
+                correct: "C"
+            }
+        ];
+
+        let currentIndex = 0;
+        let globalTimer = null;
+        let autoplayTimeout = null; // Timeout de transición automática
+        let flowState = "idle"; // "idle", "preparation", "reading", "answering", "revealed"
+        let isCleanMode = false;
+        let isAutoplayActive = false; // Indica si se inició el ciclo continuo automatizado
+
+        // --- MOTOR DE SINTETIZADOR DE AUDIO WEB AUDIO API ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playBeep(freq, duration, vol, type = 'sine') {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (err) {
+                console.log("Audio contextual inactivo", err);
+            }
+        }
+
+        function playSound(name) {
+            switch(name) {
+                case 'prep-tick':
+                    playBeep(440, 0.15, 0.1, 'triangle'); // Beep de preparación sutil
+                    break;
+                case 'read-tick':
+                    playBeep(600, 0.08, 0.05, 'sine'); // Reloj de lectura rápido
+                    break;
+                case 'solve-tick':
+                    playBeep(880, 0.12, 0.15, 'sine'); // Tock clásico del contador principal
+                    break;
+                case 'timeup':
+                    playBeep(330, 0.3, 0.2, 'sawtooth'); // Fin de tiempo
+                    break;
+                case 'success':
+                    // Acorde triunfal para revelar la respuesta
+                    playBeep(523.25, 0.4, 0.2, 'sine'); // C5
+                    setTimeout(() => playBeep(659.25, 0.4, 0.2, 'sine'), 100); // E5
+                    setTimeout(() => playBeep(783.99, 0.5, 0.25, 'sine'), 200); // G5
+                    break;
+            }
+        }
+
+        // --- SISTEMA DE FLUJO DE TRIVIAS ---
+
+        // Inicia el flujo completo automatizado con retrasos solicitados
+        function startCompleteWorkflow() {
+            resetFlowState();
+            isAutoplayActive = true; // Activar flag de reproducción automatizada
+            
+            const prepTime = parseInt(document.getElementById('time-prep').value) || 3;
+            const readTime = parseInt(document.getElementById('time-read').value) || 10;
+            const solveTime = parseInt(document.getElementById('time-solve').value) || 5;
+
+            flowState = "preparation";
+            updateStatusLabel();
+
+            let prepRemaining = prepTime;
+            document.getElementById('preparation-countdown').textContent = `${prepRemaining}s prep`;
+            document.getElementById('countdown-val').textContent = prepRemaining;
+            document.getElementById('timer-caption').textContent = "PREPARANDO GRABACIÓN...";
+            
+            playSound('prep-tick');
+
+            // 1. Fase de Preparación (3s)
+            globalTimer = setInterval(() => {
+                prepRemaining--;
+                if (prepRemaining > 0) {
+                    document.getElementById('preparation-countdown').textContent = `${prepRemaining}s prep`;
+                    document.getElementById('countdown-val').textContent = prepRemaining;
+                    playSound('prep-tick');
+                } else {
+                    clearInterval(globalTimer);
+                    document.getElementById('preparation-countdown').textContent = "¡GRABANDO!";
+                    
+                    // Pasar a Fase 2: Lectura de la pregunta
+                    startReadingPhase(readTime, solveTime);
+                }
+            }, 1000);
+        }
+
+        // Fase 2: Tiempo de Lectura de la pregunta (sutil en la parte superior)
+        function startReadingPhase(readDuration, solveDuration) {
+            flowState = "reading";
+            updateStatusLabel();
+
+            let readRemaining = readDuration;
+            
+            // Mostrar y configurar el temporizador sutil de lectura
+            const readIndicator = document.getElementById('read-timer-indicator');
+            readIndicator.classList.remove('hidden');
+            document.getElementById('read-timer-val').textContent = readRemaining;
+            
+            // Ajustes en el visualizador central
+            document.getElementById('countdown-val').textContent = "📖";
+            document.getElementById('timer-caption').textContent = "TIEMPO PARA LEER LA PREGUNTA...";
+            
+            playSound('read-tick');
+
+            globalTimer = setInterval(() => {
+                readRemaining--;
+                if (readRemaining > 0) {
+                    document.getElementById('read-timer-val').textContent = readRemaining;
+                    playSound('read-tick');
+                } else {
+                    clearInterval(globalTimer);
+                    readIndicator.classList.add('hidden');
+                    
+                    // Pasar a Fase 3: Responder la pregunta
+                    startSolvingPhase(solveDuration);
+                }
+            }, 1000);
+        }
+
+        // Fase 3: Cuenta regresiva clásica para responder
+        function startSolvingPhase(solveDuration) {
+            flowState = "answering";
+            updateStatusLabel();
+
+            let solveRemaining = solveDuration;
+            document.getElementById('countdown-val').textContent = solveRemaining;
+            document.getElementById('timer-caption').textContent = `¡TIENES ${solveDuration} SEGUNDOS PARA PENSAR!`;
+            
+            playSound('solve-tick');
+
+            globalTimer = setInterval(() => {
+                solveRemaining--;
+                if (solveRemaining > 0) {
+                    document.getElementById('countdown-val').textContent = solveRemaining;
+                    playSound('solve-tick');
+                } else {
+                    clearInterval(globalTimer);
+                    playSound('timeup');
+                    
+                    // Revelar respuesta
+                    revealAnswerDirectly();
+                }
+            }, 1000);
+        }
+
+        // Fase 4: Revelación de respuesta con transición automática integrada de 2 segundos
+        function revealAnswerDirectly() {
+            clearInterval(globalTimer);
+            clearTimeout(autoplayTimeout);
+            flowState = "revealed";
+            updateStatusLabel();
+
+            document.getElementById('countdown-val').textContent = "✓";
+            document.getElementById('timer-caption').textContent = "¡RESPUESTA REVELADA!";
+            document.getElementById('timer-caption').classList.remove('animate-pulse');
+
+            const currentQ = questions[currentIndex];
+            const correctLetter = currentQ.correct;
+
+            playSound('success');
+
+            // Pintar la opción correcta de verde y apagar el resto
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                const optEl = document.getElementById(`opt-${letter}`);
+                const indicator = optEl.querySelector('.opt-indicator');
+
+                if (letter === correctLetter) {
+                    optEl.className = "bg-emerald-950/90 border-2 border-emerald-500 rounded-xl p-2.5 flex items-center gap-2.5 transform scale-105 transition duration-300 shadow-2xl shadow-emerald-500/30";
+                    indicator.className = "w-6.5 h-6.5 rounded bg-emerald-500 text-slate-950 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator";
+                } else {
+                    optEl.className = "bg-slate-950/40 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2.5 opacity-40 transition duration-300";
+                    indicator.className = "w-6.5 h-6.5 rounded bg-slate-800 text-slate-500 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator";
+                }
+            });
+
+            // Si el modo Autoplay está activo, esperar 2 segundos y pasar automáticamente a la siguiente pregunta
+            if (isAutoplayActive) {
+                document.getElementById('timer-caption').textContent = "¡PROXIMA PREGUNTA EN 2s!";
+                
+                autoplayTimeout = setTimeout(() => {
+                    // Obtener los tiempos para la siguiente pregunta
+                    const readTime = parseInt(document.getElementById('time-read').value) || 10;
+                    const solveTime = parseInt(document.getElementById('time-solve').value) || 5;
+
+                    // Avanzar índice (loop circular continuo)
+                    const nextIndex = (currentIndex + 1) % questions.length;
+                    
+                    loadQuestionIntoUI(nextIndex);
+                    
+                    // Iniciar directamente la fase de lectura de la siguiente pregunta (sin repetir preparación de 3s)
+                    startReadingPhase(readTime, solveTime);
+                }, 2000); // 2 segundos expuesta la respuesta
+            }
+        }
+
+        // --- GESTIÓN DE PREGUNTAS Y COLA ---
+
+        function loadQuestionIntoUI(index) {
+            if (index < 0 || index >= questions.length) return;
+            currentIndex = index;
+            
+            const q = questions[currentIndex];
+            
+            // Cargar en la pantalla TikTok
+            document.getElementById('preview-category').textContent = q.category.toUpperCase();
+            document.getElementById('preview-question').textContent = q.question;
+            document.getElementById('preview-a').textContent = q.a;
+            document.getElementById('preview-b').textContent = q.b;
+            document.getElementById('preview-c').textContent = q.c;
+            document.getElementById('preview-d').textContent = q.d;
+
+            // Cargar en el Panel de Edición
+            document.getElementById('editor-title').textContent = `Editando Pregunta ${currentIndex + 1} de ${questions.length}`;
+            document.getElementById('editor-category-badge').textContent = q.category;
+            document.getElementById('edit-category').value = q.category;
+            document.getElementById('edit-question').value = q.question;
+            document.getElementById('edit-a').value = q.a;
+            document.getElementById('edit-b').value = q.b;
+            document.getElementById('edit-c').value = q.c;
+            document.getElementById('edit-d').value = q.d;
+            document.getElementById('edit-correct').value = q.correct;
+
+            // Limpiar estados visuales
+            resetFlowStateEffectsOnly();
+            renderPlaylist();
+        }
+
+        // Renderiza el administrador de la lista de reproducción (Cola)
+        function renderPlaylist() {
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const isSelected = idx === currentIndex;
+                const row = document.createElement('div');
+                row.className = `flex justify-between items-center p-2 rounded text-xs transition ${
+                    isSelected ? 'bg-amber-500/20 border border-amber-500/40 text-white font-bold' : 'bg-slate-800 hover:bg-slate-750 text-slate-300'
+                }`;
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-2 cursor-pointer truncate w-[75%]" onclick="loadQuestionIntoUI(${idx})">
+                        <span class="text-[10px] text-slate-500 font-mono">#${idx+1}</span>
+                        <span class="truncate">${q.question || '(Sin enunciado)'}</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="bg-slate-900 px-1.5 py-0.5 rounded text-[9px] text-amber-400 font-mono">${q.correct}</span>
+                        <button onclick="deleteQuestion(${idx}, event)" class="text-rose-400 hover:text-rose-300 p-0.5 transition" title="Eliminar de la cola">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Guarda lo editado en el panel para mantenerlo en el set de preguntas actual
+        function saveCurrentEdit() {
+            if (questions.length === 0) return;
+            
+            const q = questions[currentIndex];
+            q.category = document.getElementById('edit-category').value;
+            q.question = document.getElementById('edit-question').value;
+            q.a = document.getElementById('edit-a').value;
+            q.b = document.getElementById('edit-b').value;
+            q.c = document.getElementById('edit-c').value;
+            q.d = document.getElementById('edit-d').value;
+            q.correct = document.getElementById('edit-correct').value;
+
+            // Actualizar el celular en vivo
+            document.getElementById('preview-category').textContent = q.category.toUpperCase();
+            document.getElementById('editor-category-badge').textContent = q.category;
+            document.getElementById('preview-question').textContent = q.question;
+            document.getElementById('preview-a').textContent = q.a;
+            document.getElementById('preview-b').textContent = q.b;
+            document.getElementById('preview-c').textContent = q.c;
+            document.getElementById('preview-d').textContent = q.d;
+
+            renderPlaylist();
+        }
+
+        function addNewQuestionEmpty() {
+            const newQ = {
+                category: "Nuevo Tema",
+                question: "¿Pregunta de ejemplo? Presiona editar para cambiar el texto.",
+                a: "Opción A de muestra",
+                b: "Opción B de muestra",
+                c: "Opción C de muestra",
+                d: "Opción D de muestra",
+                correct: "A"
+            };
+            questions.push(newQ);
+            loadQuestionIntoUI(questions.length - 1);
+        }
+
+        function deleteQuestion(index, event) {
+            event.stopPropagation(); // Evitar disparar carga de pregunta
+            if (questions.length <= 1) {
+                alert("Debes tener al menos una pregunta en tu cola de trivias.");
+                return;
+            }
+            questions.splice(index, 1);
+            let nextIdx = currentIndex;
+            if (currentIndex >= questions.length) {
+                nextIdx = questions.length - 1;
+            }
+            loadQuestionIntoUI(nextIdx);
+        }
+
+        function restoreDefaultQuestions() {
+            questions = [
+                {
+                    category: "Derecho Laboral",
+                    question: "¿Cuál es el recargo legal que debe recibir un trabajador por laborar en día dominical o festivo en Colombia?",
+                    a: "Recargo del 35% sobre el valor ordinario.",
+                    b: "Recargo del 75% sobre el salario ordinario.",
+                    c: "Recargo del 100% sobre el salario base.",
+                    d: "Recargo del 110% por jornada especial extraordinaria.",
+                    correct: "B"
+                },
+                {
+                    category: "Derecho de Petición",
+                    question: "Conforme a la Ley 1755 de 2015, ¿cuál es el término general para responder un Derecho de Petición ordinario?",
+                    a: "10 días hábiles siguientes a su recepción.",
+                    b: "15 días hábiles siguientes a su recepción.",
+                    c: "30 días calendario contados desde la radicación.",
+                    d: "5 días hábiles si se trata de un particular.",
+                    correct: "B"
+                },
+                {
+                    category: "Derecho de Petición",
+                    question: "Si solicitas copias o información pública mediante Derecho de Petición, ¿en qué plazo te deben responder?",
+                    a: "3 días hábiles.",
+                    b: "5 días hábiles.",
+                    c: "10 días hábiles.",
+                    d: "15 días hábiles.",
+                    correct: "C"
+                },
+                {
+                    category: "Comercial / PYMEs",
+                    question: "¿Cuál de las siguientes es una característica exclusiva de las Sociedades por Acciones Simplificadas (S.A.S.) en Colombia?",
+                    a: "Deben constituirse obligatoriamente por Escritura Pública.",
+                    b: "Pueden constituirse de forma unipersonal mediante documento privado.",
+                    c: "Requieren una junta directiva de mínimo 3 miembros.",
+                    d: "Su capital debe estar totalmente pagado en el acto de constitución.",
+                    correct: "B"
+                }
+            ];
+            loadQuestionIntoUI(0);
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) {
+                loadQuestionIntoUI(currentIndex + 1);
+            } else {
+                // Volver a iniciar el ciclo
+                loadQuestionIntoUI(0);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentIndex > 0) {
+                loadQuestionIntoUI(currentIndex - 1);
+            }
+        }
+
+        // --- SISTEMAS DE ESTADO VISUAL ---
+
+        function updateStatusLabel() {
+            const statusEl = document.getElementById('workflow-status');
+            const indEl = document.getElementById('status-indicator');
+
+            indEl.className = "w-2.5 h-2.5 rounded-full animate-pulse";
+
+            if (flowState === "idle") {
+                statusEl.textContent = "Listo para Iniciar";
+                statusEl.className = "ml-2 font-bold text-blue-400";
+                indEl.classList.add("bg-blue-500");
+            } else if (flowState === "preparation") {
+                statusEl.textContent = "Preparando (Escóndete)";
+                statusEl.className = "ml-2 font-bold text-orange-400 animate-bounce";
+                indEl.classList.add("bg-orange-500");
+            } else if (flowState === "reading") {
+                statusEl.textContent = "Lectura de Pregunta";
+                statusEl.className = "ml-2 font-bold text-purple-400";
+                indEl.classList.add("bg-purple-500");
+            } else if (flowState === "answering") {
+                statusEl.textContent = "Cuenta Regresiva Activa";
+                statusEl.className = "ml-2 font-bold text-amber-400 animate-pulse";
+                indEl.classList.add("bg-amber-500");
+            } else if (flowState === "revealed") {
+                statusEl.textContent = "Respuesta Revelada";
+                statusEl.className = "ml-2 font-bold text-emerald-400";
+                indEl.classList.add("bg-emerald-500");
+            }
+        }
+
+        function resetFlowStateEffectsOnly() {
+            // Resetear colores de las opciones
+            ['A', 'B', 'C', 'D'].forEach(letter => {
+                const optEl = document.getElementById(`opt-${letter}`);
+                optEl.className = "bg-slate-900/80 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2.5 transition duration-200";
+                
+                const indicator = optEl.querySelector('.opt-indicator');
+                indicator.className = "w-6.5 h-6.5 rounded bg-amber-500/10 border border-amber-500/40 text-amber-400 font-extrabold text-xs flex items-center justify-center shrink-0 opt-indicator";
+            });
+
+            const solveTime = parseInt(document.getElementById('time-solve').value) || 5;
+            document.getElementById('countdown-val').textContent = solveTime;
+            document.getElementById('timer-caption').textContent = `¡TIENES ${solveTime} SEGUNDOS PARA PENSAR!`;
+            document.getElementById('timer-caption').classList.add('animate-pulse');
+            document.getElementById('read-timer-indicator').classList.add('hidden');
+        }
+
+        function resetFlowState() {
+            clearInterval(globalTimer);
+            clearTimeout(autoplayTimeout);
+            flowState = "idle";
+            isAutoplayActive = false; // Detener autoplay si se reinicia manualmente
+            updateStatusLabel();
+            document.getElementById('preparation-countdown').textContent = "0s prep";
+            resetFlowStateEffectsOnly();
+        }
+
+        // --- ACTUALIZACIONES DE MARCA Y TEMA ---
+
+        function updateBrand() {
+            const name = document.getElementById('brand-name').value;
+            const handle = document.getElementById('brand-handle').value;
+
+            document.getElementById('preview-brand-name').textContent = name;
+            document.getElementById('preview-brand-handle').textContent = handle;
+            document.getElementById('preview-watermark').textContent = handle;
+        }
+
+        function uploadLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const customImg = document.getElementById('custom-logo-img');
+                    const defaultSvg = document.getElementById('default-logo-svg');
+                    
+                    customImg.src = e.target.result;
+                    customImg.classList.remove('hidden');
+                    defaultSvg.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function changeTheme() {
+            const theme = document.getElementById('theme-select').value;
+            const screen = document.getElementById('tiktok-screen');
+            const timerBox = document.getElementById('timer-box');
+            const catBadge = document.getElementById('preview-category');
+            const glowR = document.getElementById('bg-glow-right');
+            const glowL = document.getElementById('bg-glow-left');
+
+            // Resetear clases previas
+            screen.className = "tiktok-viewport flex flex-col justify-between py-8 px-6";
+            timerBox.className = "w-14 h-14 rounded-full flex items-center justify-center text-slate-950 font-extrabold text-2xl shadow-2xl relative pulse-timer border-4 border-slate-950";
+            catBadge.className = "absolute -top-3 left-4 font-extrabold text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow";
+            glowR.className = "absolute -bottom-10 -right-10 w-44 h-44 rounded-full blur-3xl";
+            glowL.className = "absolute -top-10 -left-10 w-44 h-44 rounded-full blur-3xl";
+
+            if (theme === 'gold') {
+                screen.style.background = "radial-gradient(circle at top, #111827 0%, #030712 100%)";
+                timerBox.classList.add("bg-amber-500", "glow-gold");
+                catBadge.classList.add("bg-amber-500", "text-slate-950");
+                glowR.classList.add("bg-amber-500/10");
+                glowL.classList.add("bg-indigo-500/10");
+            } else if (theme === 'corporate') {
+                screen.style.background = "radial-gradient(circle at top, #0f172a 0%, #020617 100%)";
+                timerBox.classList.add("bg-sky-500", "glow-sky");
+                catBadge.classList.add("bg-sky-500", "text-slate-950");
+                glowR.classList.add("bg-sky-500/15");
+                glowL.classList.add("bg-indigo-500/10");
+            } else if (theme === 'crimson') {
+                screen.style.background = "radial-gradient(circle at top, #3b0712 0%, #020617 100%)";
+                timerBox.classList.add("bg-rose-500", "glow-rose");
+                catBadge.classList.add("bg-rose-500", "text-white");
+                glowR.classList.add("bg-rose-500/15");
+                glowL.classList.add("bg-slate-700/20");
+            } else if (theme === 'emerald') {
+                screen.style.background = "radial-gradient(circle at top, #022c22 0%, #020617 100%)";
+                timerBox.classList.add("bg-emerald-500", "glow-emerald");
+                catBadge.classList.add("bg-emerald-500", "text-slate-950");
+                glowR.classList.add("bg-emerald-500/15");
+                glowL.classList.add("bg-teal-500/10");
+            }
+        }
+
+        // --- MODO GRABACIÓN (Limpiar la pantalla de controles) ---
+        function toggleCleanMode() {
+            const controlPanel = document.querySelector('.lg\\:w-\\[45\\%\\]'); // Panel izquierdo
+            const exitBtn = document.getElementById('exit-clean-btn');
+            
+            if (!isCleanMode) {
+                controlPanel.classList.add('hidden');
+                exitBtn.classList.remove('hidden');
+                document.body.classList.remove('lg:p-6');
+                document.body.classList.add('p-0', 'justify-center');
+                isCleanMode = true;
+            } else {
+                controlPanel.classList.remove('hidden');
+                exitBtn.classList.add('hidden');
+                document.body.classList.add('lg:p-6');
+                document.body.classList.remove('p-0');
+                isCleanMode = false;
+            }
+        }
+
+        // Arranque inicial
+        window.onload = function() {
+            loadQuestionIntoUI(0);
+            updateBrand();
+        };
+    </script>
+</body>
+</html>
